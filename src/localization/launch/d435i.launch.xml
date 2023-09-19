@@ -1,0 +1,13 @@
+<launch>
+
+<include file="$(find-pkg-share camera_driver)/launch/rs_launch.py">
+    <arg name="align_depth.enable" value="true" />
+    <arg name="depth_module.profile" value="640x480x30" />
+    <arg name="rgb_camera.profile" value="640x480x30" />
+</include>
+
+<node pkg="rviz2" exec="rviz2" name="rviz_camera" args="$(find-pkg-share localization)/config/1.rviz" output="screen" />
+
+
+
+</launch>
