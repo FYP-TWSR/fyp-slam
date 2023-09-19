@@ -8,6 +8,6 @@
 
 <node pkg="rviz2" exec="rviz2" name="rviz_camera" args="$(find-pkg-share localization)/config/1.rviz" output="screen" />
 
-
+<node pkg="localization" exec="orb_slam3" name="d435i" args="$(find-pkg-share localization)/config/ORBvoc.txt $(find-pkg-share localization)/config/RealSense_D435i.yaml" output="screen" />
 
 </launch>
