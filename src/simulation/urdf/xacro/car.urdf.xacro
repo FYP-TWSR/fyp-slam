@@ -1,4 +1,5 @@
 <robot name="car" xmlns:xacro="http://wiki.ros.org/xacro">
+    <!-- <xacro:include filename="test_diff.xacro" /> -->
     <xacro:include filename="inertial_matrix.xacro" />
     <xacro:include filename="car_base.urdf.xacro" />
     <xacro:include filename="car_camera.urdf.xacro" />
