@@ -1,12 +1,12 @@
 <launch>
  
  
-    <include file="$(find-pkg-share gazebo_ros)/launch/gzserver.launch.py">
-        <arg name="world" value="$(find-pkg-share simulation)/worlds/box_house.world" />
-    </include>
+    <!-- <include file="$(find-pkg-share gazebo_ros)/launch/gzserver.launch.py"> -->
+        <!-- <arg name="world" value="$(find-pkg-share simulation)/worlds/box_house.world" /> -->
+    <!-- </include> -->
  
-    <include file="$(find-pkg-share gazebo_ros)/launch/gzclient.launch.py" />
-    <!-- <node pkg="gazebo_ros" exec="spawn_model" name="model" args="-urdf -model mycar -param robot_description">
-        <param name="robot_description" command="$(find xacro)/xacro $(find mycar)/urdf/xacro/car.urdf.xacro" />
-    </node> -->
+    <!-- <include file="$(find-pkg-share gazebo_ros)/launch/gzclient.launch.py" /> -->
+    <node pkg="gazebo_ros" exec="spawn_entity.py" name="model" args="-urdf -model simulation -param robot_description">
+        <param name="robot_description" command="$(find-pkg-share xacro)/xacro $(find-pkg-share simulation)/urdf/xacro/car.urdf.xacro" />
+    </node>
 </launch>

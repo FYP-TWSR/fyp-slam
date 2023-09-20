@@ -25,6 +25,9 @@ endif()
 
 ament_package()
 
-install(DIRECTORY launch
+install(DIRECTORY 
+  launch
+  urdf
+  param
   DESTINATION share/${PROJECT_NAME}
 )
