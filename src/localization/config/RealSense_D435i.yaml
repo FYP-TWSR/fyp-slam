@@ -6,10 +6,10 @@
 Camera.type: "PinHole"
 
 # Right Camera calibration and distortion parameters (OpenCV)
-Camera.fx: 617.201
-Camera.fy: 617.362
-Camera.cx: 324.637
-Camera.cy: 242.462
+Camera.fx: 605.201
+Camera.fy: 604.691
+Camera.cx: 322.637
+Camera.cy: 249.462
 
 
 # distortion parameters
@@ -29,7 +29,7 @@ Camera.fps: 30.0
 Camera.RGB: 1
 
 # Image scale, it changes the image size to be processed (<1.0: reduce, >1.0: increase)
-Camera.imageScale: 0.5 # 0.5 #0.7071 # 1/sqrt(2)
+Camera.imageScale: 1 # 0.5 #0.7071 # 1/sqrt(2)
 
 # Close/Far threshold. Baseline times.
 ThDepth: 40.0

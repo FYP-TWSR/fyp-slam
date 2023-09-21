@@ -14,7 +14,7 @@ RgbdSlamNode::RgbdSlamNode(ORB_SLAM3::System* pSLAM)
     syncApproximate = std::make_shared<message_filters::Synchronizer<approximate_sync_policy> >(approximate_sync_policy(10), *rgb_sub, *depth_sub);
     syncApproximate->registerCallback(&RgbdSlamNode::GrabRGBD, this);
 
-    pcloud_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("map_points", 1);
+    pcloud_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("realsense_pts", 1);
     pose_pub = this->create_publisher<ImageMsg>("camera_pose", 1);
 
 }
@@ -25,7 +25,7 @@ RgbdSlamNode::~RgbdSlamNode()
     m_SLAM->Shutdown();
 
     // Save camera trajectory
-    m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    // m_SLAM->SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 }
 
 void RgbdSlamNode::GrabRGBD(const ImageMsg::SharedPtr msgRGB, const ImageMsg::SharedPtr msgD)
@@ -69,7 +69,7 @@ sensor_msgs::msg::PointCloud2 RgbdSlamNode::tracked_mappoints_to_pointcloud(std:
 
     sensor_msgs::msg::PointCloud2 cloud;
 
-    cloud.header.frame_id = "world";
+    cloud.header.frame_id = "realsense";
     cloud.height = 1;
     cloud.width = map_points.size();
     cloud.is_bigendian = false;
@@ -100,16 +100,6 @@ sensor_msgs::msg::PointCloud2 RgbdSlamNode::tracked_mappoints_to_pointcloud(std:
             // Original data
             Eigen::Vector3f pMPw = map_points[i]->GetWorldPos();
             
-            // // Apply world frame orientation for non-IMU cases
-            // if (sensor_type == ORB_SLAM3::System::MONOCULAR || sensor_type == ORB_SLAM3::System::STEREO)
-            // {
-            //     Sophus::SE3f Tc0mp(Eigen::Matrix3f::Identity(), pMPw);
-            //     //TODO: Warning, may error
-            //     Sophus::SE3f Tc0w = Sophus::SE3f();
-            //     Sophus::SE3f Twmp = Tc0w.inverse() * Tc0mp;
-            //     pMPw = Twmp.translation();
-            // }
-
             Eigen::Vector3f point_translation(pMPw.x(), pMPw.y(), pMPw.z());
 
             float data_array[num_channels] = {
