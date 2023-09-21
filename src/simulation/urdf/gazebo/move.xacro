@@ -1,29 +1,48 @@
 <robot name="my_car_move" xmlns:xacro="http://wiki.ros.org/xacro">
-  <ros2_control name="GazeboSystem" type="system">
-    <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-    </hardware>
-    <joint name="left_wheel2base_link">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="right_wheel2base_link">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control>
-
-  <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find simulation)/param/diff_drive_controller.yaml</parameters>
-    </plugin>
-  </gazebo> 
+ 
+        <!-- Transmission implementation: used to connect the controller and joints -->
+    <xacro:macro name="joint_trans" params="joint_name">
+        <!-- Transmission is important to link the joints and the controller -->
+        <transmission name="${joint_name}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint_name}">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${joint_name}_motor">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+ 
+    <!-- Each drive wheel needs to be equipped with a transmission device -->
+    <xacro:joint_trans joint_name="left_wheel2base_link" />
+    <xacro:joint_trans joint_name="right_wheel2base_link" />
+ 
+    <!-- controller -->
+    <gazebo>
+        <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+            <rosDebugLevel>Debug</rosDebugLevel>
+            <publish_wheel_tf>true</publish_wheel_tf>
+            <robot_namespace>/</robot_namespace>
+            <publish_odom_tf>1</publish_odom_tf>
+            <publish_odom>true</publish_odom>
+            <publish_wheel_joint_state>true</publish_wheel_joint_state>
+            <alwaysOn>true</alwaysOn>
+            <update_rate>100.0</update_rate>
+            <legacy_mode>true</legacy_mode>
+            <left_joint>left_wheel2base_link</left_joint> <!-- left wheel -->
+            <right_joint>right_wheel2base_link</right_joint> <!-- right wheel -->
+            <wheel_separation>${base_radius * 2}</wheel_separation> <!-- Wheel spacing -->
+            <wheel_diameter>${wheel_radius * 2}</wheel_diameter> <!-- Wheel diameter -->
+            <broadcast_tf>1</broadcast_tf>
+            <wheel_torque>30</wheel_torque>
+            <wheel_acceleration>1.8</wheel_acceleration>
+            <command_topic>cmd_vel</command_topic> <!-- Motion Control Topics -->
+            <odometry_frame>odom</odometry_frame> 
+            <odometry_topic>odom</odometry_topic> <!-- Odometer topic -->
+            <robot_base_frame>base_footprint</robot_base_frame> <!-- Root coordinate system -->
+        </plugin>
+    </gazebo>
+ 
 </robot>
