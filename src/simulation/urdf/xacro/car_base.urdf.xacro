@@ -56,7 +56,7 @@
  
     <!-- qudong wheel -->
     <xacro:property name="wheel_radius" value="0.0325" />
-    <xacro:property name="wheel_length" value="0.05" />
+    <xacro:property name="wheel_length" value="0.015" />
     <xacro:property name="wheel_mass" value="0.05" />
     
     <xacro:macro name="add_wheels" params="name flag">
