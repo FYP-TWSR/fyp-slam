@@ -26,9 +26,11 @@
           <stddev>0.01</stddev>
         </noise>
       </ray>
-      <plugin name="gazebo_rplidar" filename="libgazebo_ros_laser.so">
-        <topicName>/scan</topicName>
-        <frameName>laser</frameName>
+      <plugin name="gazebo_ros_head_hokuyo_controlle" filename="libgazebo_ros_ray_sensor.so" >
+        <ros>
+          <remapping>~/out:=/scan</remapping>                                                               
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
       </plugin>
     </sensor>
   </gazebo>

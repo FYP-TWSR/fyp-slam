@@ -12,16 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
-
 # ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_drive_base_controller/cmd_vel_unstamped
-
-
-
-
-
-
 
 import os
 
@@ -75,19 +66,12 @@ def generate_launch_description():
         output='screen',
         parameters=[params]
     )
-
-    # node_joint_state_publisher = Node(
-    #     package='joint_state_publisher',
-    #     executable='joint_state_publisher',
-    #     output='screen',
-    #     parameters=[params]
-    # )
-    # keyboard_control_node = Node(
-    #     package='teleop_twist_keyboard',
-    #     executable='teleop_twist_keyboard',
-    #     output='screen',
-    #     remappings=[('/diff_drive_base_controller/cmd_vel_unstamped','/cmd_vel')]
-    # )
+    node_joint_state_publisher = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        output='screen',
+        parameters=[params]
+    )
     
 
     spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
@@ -104,6 +88,10 @@ def generate_launch_description():
     load_diff_drive_base_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              'diff_drive_base_controller'],
+        output='screen'
+    )
+    rviz2 = ExecuteProcess(
+        cmd=['rviz2', '-d', os.path.join(get_package_share_directory('simulation'), 'param', '1.rviz')],
         output='screen'
     )
 
@@ -125,7 +113,8 @@ def generate_launch_description():
             )
         ),
         gazebo,
-        # load_world,
         node_robot_state_publisher,
+        node_joint_state_publisher,
         spawn_entity,
+        rviz2
     ])
