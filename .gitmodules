@@ -1,0 +1,3 @@
+[submodule "src/slam_gmapping"]
+	path = src/slam_gmapping
+	url = https://github.com/Project-MANAS/slam_gmapping.git
