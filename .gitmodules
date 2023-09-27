@@ -1,3 +1,9 @@
 [submodule "src/slam_gmapping"]
 	path = src/slam_gmapping
 	url = https://github.com/Project-MANAS/slam_gmapping.git
+[submodule "src/livox_driver"]
+	path = src/livox_driver
+	url = https://github.com/HUANG-Haolun/livox_ros_driver2.git
+[submodule "src/fast_lio"]
+	path = src/fast_lio
+	url = https://github.com/HUANG-Haolun/FAST_LIO.git
