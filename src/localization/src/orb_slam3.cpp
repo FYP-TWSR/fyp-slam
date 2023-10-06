@@ -15,7 +15,7 @@ RgbdSlamNode::RgbdSlamNode(ORB_SLAM3::System* pSLAM)
     syncApproximate->registerCallback(&RgbdSlamNode::GrabRGBD, this);
 
     pcloud_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("realsense_pts", 1);
-    pose_pub = this->create_publisher<ImageMsg>("camera_pose", 1);
+    pose_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>("camera_pose", 1);
 
 }
 
@@ -54,6 +54,9 @@ void RgbdSlamNode::GrabRGBD(const ImageMsg::SharedPtr msgRGB, const ImageMsg::Sh
     Sophus::SE3f Twc = Tcw.inverse();
     rclcpp::Time timestamp = msgRGB->header.stamp;
     sensor_msgs::msg::PointCloud2 cloud = tracked_mappoints_to_pointcloud(m_SLAM->GetTrackedMapPoints());
+    geometry_msgs::msg::PoseStamped pose = getPose(Twc);
+    pose.header.stamp = timestamp;
+    pose_pub->publish(pose);
     cloud.header.stamp = timestamp;
     pcloud_pub->publish(cloud);
 }
@@ -112,6 +115,41 @@ sensor_msgs::msg::PointCloud2 RgbdSlamNode::tracked_mappoints_to_pointcloud(std:
         }
     }
     return cloud;
+}
+
+geometry_msgs::msg::TransformStamped RgbdSlamNode::getTF(Sophus::SE3f se3fTrans)
+{
+    geometry_msgs::msg::TransformStamped t;
+
+    t.header.frame_id = world_frame_id;
+    t.child_frame_id = camera_frame_id;
+
+    t.transform.translation.x = se3fTrans.translation().x();
+    t.transform.translation.y = se3fTrans.translation().y();
+    t.transform.translation.z = se3fTrans.translation().z();
+
+    t.transform.rotation.x = se3fTrans.unit_quaternion().coeffs().x();
+    t.transform.rotation.y = se3fTrans.unit_quaternion().coeffs().y();
+    t.transform.rotation.z = se3fTrans.unit_quaternion().coeffs().z();
+    t.transform.rotation.w = se3fTrans.unit_quaternion().coeffs().w();
+    return t;
+}
+
+geometry_msgs::msg::PoseStamped RgbdSlamNode::getPose(Sophus::SE3f se3fTrans)
+{
+    geometry_msgs::msg::PoseStamped p;
+
+    p.header.frame_id = world_frame_id;
+
+    p.pose.position.x = se3fTrans.translation().z();
+    p.pose.position.y = se3fTrans.translation().y();
+    p.pose.position.z = se3fTrans.translation().x();
+
+    p.pose.orientation.x = se3fTrans.unit_quaternion().coeffs().x();
+    p.pose.orientation.y = se3fTrans.unit_quaternion().coeffs().y();
+    p.pose.orientation.z = se3fTrans.unit_quaternion().coeffs().z();
+    p.pose.orientation.w = se3fTrans.unit_quaternion().coeffs().w();
+    return p;
 }
 
 int main(int argc, char **argv)

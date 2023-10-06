@@ -4,6 +4,8 @@ project(localization)
 set(ENV{PYTHONPATH} "/opt/ros/humble/lib/python3.10/site-packages")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -23,7 +25,7 @@ find_package(message_filters REQUIRED)
 find_package(Sophus REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(ORB_SLAM3 REQUIRED)
-find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -56,7 +58,7 @@ link_directories(
 add_executable(orb_slam3
   src/orb_slam3.cpp
 )
-ament_target_dependencies(orb_slam3 rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin OpenCV tf2)
+ament_target_dependencies(orb_slam3 rclcpp sensor_msgs cv_bridge message_filters ORB_SLAM3 Pangolin OpenCV tf2_ros)
 
 
 install(
