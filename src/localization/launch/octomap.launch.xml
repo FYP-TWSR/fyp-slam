@@ -14,8 +14,11 @@
     <!-- <param name = "ground_filter/distance" type = "double" value = "1.0" /> -->
 	<!-- <param name = "ground_filter/plane_distance" type = "double" value = "0.3" /> -->
 
-    <param name = "pointcloud_max_z" value = "-1" />
-    <param name = "pointcloud_min_z" value = "-2.0" />
+    <!-- <param name = "pointcloud_max_z" value = "200" /> -->
+    <!-- <param name = "pointcloud_min_z" value = "100" /> -->
+
+    <param name = "occupancy_max_z" value = "1.0" />
+    <param name = "occupancy_min_z" value = "-1.0" />
 
     <!-- <param name = "filter_speckles" type = "bool" value = "true" /> -->
 
