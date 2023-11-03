@@ -4,7 +4,7 @@
 
 ### 1.1 Install Opencv and Ros2 humble
 
-detailed guidelines can be found in our RV2024 repo - [RV2024](https://github.com/hkustenterprize/RM2023-RV)
+detailed guidelines can be found in our CV repo - [https://github.com/hkustenterprize/RM2023-RV](https://github.com/hkustenterprize/RM2023-RV)
 
 ### 1.2 Install ORB-SLAM3
 
