@@ -11,7 +11,6 @@
 <node pkg="localization" exec="orb_slam3" name="d435i" args="$(find-pkg-share localization)/config/ORBvoc.txt $(find-pkg-share localization)/config/RealSense_D435i.yaml" output="screen" />
 
 <node pkg="tf2_ros" exec="static_transform_publisher" name="realsense_to_world" args="0 0 0 -1.5708 0 -1.5708 world realsense" />
-<node pkg="tf2_ros" exec="static_transform_publisher" name="cam_to_world" args="0 0 0 -1.5708 0 -1.5708 world cam_pose" />
 
 <include file="$(find-pkg-share localization)/launch/octomap.launch.xml"/>
 
