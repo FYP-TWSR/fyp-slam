@@ -44,7 +44,7 @@ private:
     cv_bridge::CvImageConstPtr cv_ptrRGB;
     cv_bridge::CvImageConstPtr cv_ptrD;
 
-    string world_frame_id = "world";
+    string world_frame_id = "realsense";
     string camera_frame_id = "camera_link";
 
     std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image> > rgb_sub;

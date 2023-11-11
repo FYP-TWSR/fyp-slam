@@ -72,7 +72,7 @@ sensor_msgs::msg::PointCloud2 RgbdSlamNode::tracked_mappoints_to_pointcloud(std:
 
     sensor_msgs::msg::PointCloud2 cloud;
 
-    cloud.header.frame_id = "realsense";
+    cloud.header.frame_id = world_frame_id;
     cloud.height = 1;
     cloud.width = map_points.size();
     cloud.is_bigendian = false;
@@ -141,9 +141,9 @@ geometry_msgs::msg::PoseStamped RgbdSlamNode::getPose(Sophus::SE3f se3fTrans)
 
     p.header.frame_id = world_frame_id;
 
-    p.pose.position.x = se3fTrans.translation().z();
+    p.pose.position.x = se3fTrans.translation().x();
     p.pose.position.y = se3fTrans.translation().y();
-    p.pose.position.z = se3fTrans.translation().x();
+    p.pose.position.z = se3fTrans.translation().z();
 
     p.pose.orientation.x = se3fTrans.unit_quaternion().coeffs().x();
     p.pose.orientation.y = se3fTrans.unit_quaternion().coeffs().y();

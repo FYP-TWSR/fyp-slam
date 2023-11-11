@@ -3,7 +3,8 @@
 
     <param name = "resolution" value = "0.05" />
 
-    <param name = "frame_id" value = "camera_init" />
+    <param name = "frame_id" value = "world" />
+    <!-- <param name = "frame_id" value = "camera_init" /> -->
 
     <!-- set min to speed up! -->
     <param name = "sensor_model/max_range" value = "15.0" />
@@ -29,7 +30,9 @@
 
     <param name = "latch" value = "false" /> 
 
-    <remap from = "cloud_in" to = "/Laser_map" />
+    <!-- <remap from = "cloud_in" to = "/Laser_map" /> -->
+    <remap from = "cloud_in" to = "/realsense_pts" />
+    <remap from = "projected_map" to = "map" />
  
   </node>
 </launch>
