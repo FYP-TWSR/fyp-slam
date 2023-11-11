@@ -24,3 +24,16 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
+install(
+  DIRECTORY
+    launch
+    config
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# install(
+#   TARGETS
+#     orb_slam3
+#   DESTINATION lib/${PROJECT_NAME}
+# )
