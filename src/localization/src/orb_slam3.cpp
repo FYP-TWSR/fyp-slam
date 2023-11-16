@@ -93,7 +93,7 @@ sensor_msgs::msg::PointCloud2 RgbdSlamNode::tracked_mappoints_to_pointcloud(std:
 
     cloud.data.resize(cloud.row_step * cloud.height);
 
-    unsigned char *cloud_data_ptr = &(cloud.data[0]);
+    // unsigned char *cloud_data_ptr = &(cloud.data[0]);
 
 
     for (unsigned int i = 0; i < cloud.width; i++)
@@ -111,7 +111,7 @@ sensor_msgs::msg::PointCloud2 RgbdSlamNode::tracked_mappoints_to_pointcloud(std:
                 point_translation.z()
             };
 
-            memcpy(cloud_data_ptr+(i*cloud.point_step), data_array, num_channels*sizeof(float));
+            memcpy(&cloud.data+(i*cloud.point_step), data_array, num_channels*sizeof(float));
         }
     }
     return cloud;

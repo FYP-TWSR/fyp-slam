@@ -4,6 +4,7 @@
 
 <include file="$(find-pkg-share fast_lio)/launch/mapping.launch.py"/>
 
-<include file="$(find-pkg-share localization)/launch/octomap.launch.xml"/>
+<!-- <include file="$(find-pkg-share localization)/launch/octomap.launch.xml"/> -->
 
+<node pkg="tf2_ros" exec="static_transform_publisher" name="livox_to_world" args="0 0 0 -0.785398163 0 0 world livox" />
 </launch>
