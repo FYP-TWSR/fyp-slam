@@ -9,7 +9,7 @@
 
     <include file="$(find-pkg-share navigation)/launch/nav2.launch.py"/>
     
-    <node pkg="tf2_ros" exec="static_transform_publisher" name="livox_to_world" args="-1.76 3.86 1 0 0 0 world body" />
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="body_to_world" args="-1.76 3.86 1 0 0 0 world body" />
 
 
 </launch>

@@ -20,3 +20,6 @@ sudo make install
 git clone --recursive git@github.com:FYP-TWSR/fyp-slam.git
 colcon build --symlink-install
 ```
+
+
+sudo ifconfig enxc84d442988e6 192.168.1.50
