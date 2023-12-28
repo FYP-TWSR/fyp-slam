@@ -4,22 +4,25 @@
     <param name = "resolution" value = "0.05" />
 
     <param name = "frame_id" value = "world" />
-    <!-- <param name = "frame_id" value = "camera_init" /> -->
+
+
+    <param name = "frame_id" value = "world" />
 
     <!-- set min to speed up! -->
     <param name = "sensor_model/max_range" value = "15.0" />
 
     <!-- <param name = "base_frame_id" type = "string" value = "base_link" /> -->
 
-	<!-- <param name = "filter_ground" type = "bool" value = "true" /> -->
-    <!-- <param name = "ground_filter/distance" type = "double" value = "1.0" /> -->
+	<param name = "filter_ground" type = "bool" value = "true" />
+    <param name = "ground_filter/distance" value = "1.0" />
+    <param name = "ground_filter/plane_distance" value = "1.0" />
 	<!-- <param name = "ground_filter/plane_distance" type = "double" value = "0.3" /> -->
 
     <!-- <param name = "pointcloud_max_z" value = "200" /> -->
     <!-- <param name = "pointcloud_min_z" value = "100" /> -->
 
-    <param name = "occupancy_max_z" value = "1.0" />
-    <param name = "occupancy_min_z" value = "-1.0" />
+    <param name = "occupancy_max_z" value = "0.5" />
+    <param name = "occupancy_min_z" value = "-0.1" />
 
     <!-- <param name = "filter_speckles" type = "bool" value = "true" /> -->
 
@@ -30,8 +33,8 @@
 
     <param name = "latch" value = "false" /> 
 
-    <!-- <remap from = "cloud_in" to = "/Laser_map" /> -->
-    <remap from = "cloud_in" to = "/realsense_pts" />
+    <remap from = "cloud_in" to = "/Laser_map" />
+    <!-- <remap from = "cloud_in" to = "/realsense_pts" /> -->
     <remap from = "projected_map" to = "map" />
  
   </node>

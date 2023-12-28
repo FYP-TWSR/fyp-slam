@@ -1,0 +1,15 @@
+<launch>
+
+    <include file="$(find-pkg-share localization)/launch/octomap.launch.xml"/>
+    
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="livox_to_world" args="0 0 0 0 0 -0.05 world camera_init" />
+
+    
+    <include file="$(find-pkg-share localization)/launch/map_server.launch.py"/>
+
+    <include file="$(find-pkg-share navigation)/launch/nav2.launch.py"/>
+    
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="livox_to_world" args="-1.76 3.86 1 0 0 0 world body" />
+
+
+</launch>
