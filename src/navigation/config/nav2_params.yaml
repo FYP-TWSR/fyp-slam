@@ -1,6 +1,6 @@
 bt_navigator:
   ros__parameters:
-    use_sim_time: True
+    use_sim_time: False
     global_frame: world
     robot_base_frame: body
     odom_topic: /Odometry
