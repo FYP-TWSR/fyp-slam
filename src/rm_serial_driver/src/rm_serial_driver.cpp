@@ -17,8 +17,7 @@ RMSerialDriver::RMSerialDriver(const rclcpp::NodeOptions & options)
   timestamp_offset_ = this->declare_parameter("timestamp_offset", 0.0);
   tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
   // 2. CVmode Publisher
-  mode_pub_ =
-    this->create_publisher<std_msgs::msg::UInt8>("/serial_driver/mode", 10);
+  mode_pub_ = this->create_publisher<std_msgs::msg::UInt8>("/serial_driver/mode", 10);
   // 3. Armor Detector parameter client
   detector_param_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this, "armor_detector");
   // 4. Armor Tracker reset service client
@@ -68,36 +67,91 @@ void RMSerialDriver::receiveData()
   std::vector<uint8_t> header(3);
   std::vector<uint8_t> data;
   data.reserve(sizeof(BaseMsg));
+
+  // rclcpp::Clock clock;
+  // int64_t lastRxTime = clock.now().nanoseconds() / 1000000;
+
+  // __attribute_used__ int dataLenth = 0;
+  // int64_t microseconds = now. / 1000;
+
   while (rclcpp::ok()) {
     try {
-      serial_driver_->port()->receive(header);
+    startRx:
+      data.resize(1);
+      while (true) {
+        serial_driver_->port()->receive(data);
+        if (data[0] == 0xAA) {
+          header[0] = data[0];
+          // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "header found: %d", data[0]);
+          break;
+        } else {
+          // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "resyncing: %d", data[0]);
+        }
+      }
+      serial_driver_->port()->receive(data);
+      header[1] = data[0];
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "dataLen: %d", data[0]);
+      // dataLenth = data[0];
+      serial_driver_->port()->receive(data);
+      header[2] = data[0];
+
+      if (header[1] != 24 || header[2] != GIMBAL_MSG) {
+        // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "protocolId: %d", data[0]);
+        goto startRx;
+      }
+
+      // serial_driver_->port()->receive(header);
       // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "start_byte: %d", header[0]);
       // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "dataLen: %d", header[1]);
       // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "protocolId: %d", header[2]);
 
-      if (header[2] == GIMBAL_MSG) {
-        data.resize(sizeof(BaseMsg) - 3);
-        serial_driver_->port()->receive(data);
+      // if (data[0] == GIMBAL_MSG) {
+      data.resize(header[1] + 2);
+      serial_driver_->port()->receive(data);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "-2: %d", header[1]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "-1: %d", data[35]);
+      // for(int i = 0; i < 38; i++)
+      // {
+      //   RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 1, "data[%d]: %u", i, data[i]);
+      //   std::cout << "data[" << i <<"]: "  << unsigned(data[i]) << std::endl;
+      // }
 
-        data.insert(data.begin(), header[2]);
-        data.insert(data.begin(), header[1]);
-        data.insert(data.begin(), header[0]);
-        BaseMsg packet = fromVector(data);
+      data.insert(data.begin(), header[2]);
+      data.insert(data.begin(), header[1]);
+      data.insert(data.begin(), header[0]);
+      BaseMsg packet = fromVector(data);
 
-        // RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 20, "cur_cv_mode: %d", packet.cur_cv_mode);
-        // RCLCPP_WARN_THROTTLE(
-        //   get_logger(), *get_clock(), 20, "target_color: %d", packet.target_color);
-        // RCLCPP_ERROR_THROTTLE(
-        //   get_logger(), *get_clock(), 20, "bullet_speed: %.2f", packet.bullet_speed);
+      // RCLCPP_INFO_THROTTLE(get_logger(), *get_clock(), 20, "cur_cv_mode: %d", packet.cur_cv_mode);
+      // RCLCPP_WARN_THROTTLE(
+      //   get_logger(), *get_clock(), 20, "target_color: %d", packet.target_color);
+      // RCLCPP_ERROR_THROTTLE(
+      //   get_logger(), *get_clock(), 20, "bullet_speed: %.2f", packet.bullet_speed);
 
-        bool crc_ok =
-          crc16::Verify_CRC16_Check_Sum(reinterpret_cast<const uint8_t *>(&packet), sizeof(packet));
+      bool crc_ok =
+        crc16::Verify_CRC16_Check_Sum(reinterpret_cast<const uint8_t *>(&packet), sizeof(packet));
 
-        if (!crc_ok) {
-          RCLCPP_ERROR(get_logger(), "CRC error!");
-          continue;
-        }
+      // }
+      // else
+      // {
 
+      // RCLCPP_WARN_THROTTLE(
+      // get_logger(), *get_clock(), 20, "eulerAngles: %.4f", packet.eulerAngles[0]);
+      // RCLCPP_WARN_THROTTLE(
+      // get_logger(), *get_clock(), 20, "eulerAngles: %.4f", packet.eulerAngles[1]);
+      // RCLCPP_WARN_THROTTLE(
+      // get_logger(), *get_clock(), 20, "eulerAngles: %.4f", packet.eulerAngles[2]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "accel: %.4f", packet.accel[0]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "accel: %.4f", packet.accel[1]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "accel: %.4f", packet.accel[2]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "gyroXYZ: %.4f", packet.gyroXYZ[0]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "gyroXYZ: %.4f", packet.gyroXYZ[1]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "gyroXYZ: %.4f", packet.gyroXYZ[2]);
+      // RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "checksum: %d", packet.checksum);
+      // }
+      if (!crc_ok) {
+        RCLCPP_ERROR(get_logger(), "CRC error!");
+        continue;
+      }
         // To save space, reuse the variable "target_color" to indicate whether to reset tracker
         // if (packet.target_color == 2) {
         //   resetArmorTracker();
@@ -109,7 +163,7 @@ void RMSerialDriver::receiveData()
         //     previous_receive_color_ = packet.target_color;
         //   }
         // }
-
+        
         std_msgs::msg::UInt8 mode_msg;
         // cvmode_msg.bullet_speed = packet.bullet_speed;
         // cvmode_msg.cur_cv_mode = packet.cur_cv_mode;
@@ -118,12 +172,12 @@ void RMSerialDriver::receiveData()
         geometry_msgs::msg::TransformStamped t;
         timestamp_offset_ = this->get_parameter("timestamp_offset").as_double();
         t.header.stamp = this->now() + rclcpp::Duration::from_seconds(timestamp_offset_);
-        t.header.frame_id = "formSerial";
-        t.child_frame_id = "base_quaterninon_link";
-        tf2::Quaternion q(packet.q_x, packet.q_y, packet.q_z, packet.q_w);
+        t.header.frame_id = "world";
+        t.child_frame_id = "serial_base";
+        tf2::Quaternion q;
+        q.setRPY(packet.eulerAngles[2], packet.eulerAngles[1], packet.eulerAngles[0]);  // roll, pitch, yaw
         t.transform.rotation = tf2::toMsg(q);
         tf_broadcaster_->sendTransform(t);
-      }
     } catch (const std::exception & ex) {
       RCLCPP_ERROR_THROTTLE(
         get_logger(), *get_clock(), 20, "Error while receiving data: %s", ex.what());
@@ -144,7 +198,6 @@ void RMSerialDriver::sendCommand(geometry_msgs::msg::Twist::SharedPtr msg)
     base_command_msg.target_linear_vel_x = msg->linear.x;
     base_command_msg.target_linear_vel_y = msg->linear.y;
     base_command_msg.target_angular_vel_z = msg->angular.z;
-
 
     crc16::Append_CRC16_Check_Sum(
       reinterpret_cast<uint8_t *>(&base_command_msg), sizeof(BaseCommand));

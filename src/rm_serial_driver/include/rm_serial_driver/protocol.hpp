@@ -54,24 +54,18 @@ struct BeatMsg  // BEAT_MSG
   uint16_t checksum = 0;
 } __attribute__((packed));
 
-struct BaseMsg  // GIMBAL_MSG
+struct BaseMsg  // BASE_MSG
 {
   // header
   uint8_t sof = 0xAAu;
   uint8_t dataLen = 0;
   uint8_t protocolID = 0;
-  // gimbal msg
-  uint8_t cur_mode;
-  // uint8_t target_color;
-  // float bullet_speed;
-  float q_w;
-  float q_x;
-  float q_y;
-  float q_z;
-  float cur_linear_vel_x;
-  float cur_linear_vel_y;
-  float cur_angular_vel_z;
-  // chassis msg
+  // Base msg
+  // uint8_t cur_mode;
+  float eulerAngles[3];
+  float accel[3];
+  // float gyroXYZ[3];
+  // crc checksum
   uint16_t checksum = 0;
 } __attribute__((packed));
 
